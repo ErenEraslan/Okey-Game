@@ -1,3 +1,5 @@
+import java.util.Random;
+
 public class SimplifiedOkeyGame {
 
     Player[] players;
@@ -32,7 +34,13 @@ public class SimplifiedOkeyGame {
      * other players get 14 tiles, this method assumes the tiles are already shuffled
      */
     public void distributeTilesToPlayers() {
-
+        for(int i = 0; i < 14; i++){
+            for(int j = 0; j < 4; j++){
+                players[j].addTile(tiles[(j * 14) + i]);
+            }
+        }
+        players[0].addTile(tiles[56]);
+        tileCount -= 57;
     }
 
     /*
@@ -58,7 +66,28 @@ public class SimplifiedOkeyGame {
      * TODO: should randomly shuffle the tiles array before game starts
      */
     public void shuffleTiles() {
+        Random rand = new Random();
+        Tile[] tilesOrdered = new Tile[104];
 
+        // Copying the values of tiles into tilesOrdered array
+        for(int i = 0; i < 104; i++){
+            tilesOrdered[i] = tiles[i];
+        }
+
+        // Checking for the random index of the tilesOrdered array is 0, if it's 0 it means that random index has already been used
+        boolean keepShuffling = true;
+        int index = 0;
+        while(keepShuffling){
+            int randIndex = rand.nextInt(104);
+            if(tilesOrdered[randIndex].value != 0){
+                tiles[index] = tilesOrdered[randIndex];
+                tilesOrdered[randIndex].value = 0;
+                index++;
+            }
+            if(index == 104){
+                keepShuffling = false;
+            }
+        }
     }
 
     /*

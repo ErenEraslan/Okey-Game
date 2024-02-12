@@ -14,6 +14,9 @@ public class Tile {
      * return true if they are matching, false otherwise
      */
     public boolean matchingTiles(Tile t) {
+        if(this.value == t.value){
+            return true;
+        }
         return false;
     }
 
@@ -24,7 +27,13 @@ public class Tile {
      * return -1 if the given tile has higher value
      */
     public int compareTo(Tile t) {
-       return 0;
+        if(this.value > t.value){
+            return 1;
+        }
+        else if(this.value < t.value){
+            return -1;
+        }
+        return 0;
     }
 
     /*
@@ -34,6 +43,10 @@ public class Tile {
      * otherwise, it should return false (they cannot form a chain)
      */
     public boolean canFormChainWith(Tile t) {
+        int diff = this.value - t.value;
+        if(Math.abs(diff) == 1){
+            return true;
+        }
         return false;
     }
 
