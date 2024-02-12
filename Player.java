@@ -6,18 +6,21 @@ public class Player {
     public Player(String name) {
         setName(name);
         playerTiles = new Tile[15]; // there are at most 15 tiles a player owns at any time
-        numberOfTiles = 0; // currently this player owns 0 tiles, will pick tiles at the beggining of the game
+        numberOfTiles = 0; // currently this player owns 0 tiles, will pick tiles at the beggining of the
+                           // game
     }
 
     /*
      * TODO: checks this player's hand to determine if this player is winning
      * the player with a complete chain of 14 consecutive numbers wins the game
-     * note that the player whose turn is now draws one extra tile to have 15 tiles in hand,
-     * and the extra tile does not disturb the longest chain and therefore the winning condition
+     * note that the player whose turn is now draws one extra tile to have 15 tiles
+     * in hand,
+     * and the extra tile does not disturb the longest chain and therefore the
+     * winning condition
      * check the assigment text for more details on winning condition
      */
     public boolean checkWinning() {
-        return false;
+        return this.findLongestChain() >= 14;
     }
 
     /*
@@ -28,7 +31,17 @@ public class Player {
      */
     public int findLongestChain() {
         int longestChain = 0;
-
+        int currentLongestChain = 0;
+        for (int i = 0; i < numberOfTiles - 1; i++) {
+            if (playerTiles[i + 1].getValue() - playerTiles[i].getValue() == 1) {
+                currentLongestChain++;
+            } else if (playerTiles[i + 1].getValue() != playerTiles[i].getValue()) {
+                if (currentLongestChain >= longestChain) {
+                    longestChain = currentLongestChain;
+                }
+                currentLongestChain = 0;
+            }
+        }
         return longestChain;
     }
 
@@ -36,16 +49,30 @@ public class Player {
      * TODO: removes and returns the tile in given index position
      */
     public Tile getAndRemoveTile(int index) {
-        return null;
+        Tile temp = playerTiles[index];
+        for (int i = index; i < numberOfTiles - 1; i++) {
+            playerTiles[i] = playerTiles[i + 1];
+        }
+        return temp;
     }
 
     /*
      * TODO: adds the given tile to this player's hand keeping the ascending order
-     * this requires you to loop over the existing tiles to find the correct position,
+     * this requires you to loop over the existing tiles to find the correct
+     * position,
      * then shift the remaining tiles to the right by one
      */
     public void addTile(Tile t) {
-
+        int position = 0;
+        for (int i = 0; i < numberOfTiles; i++) {
+            if (playerTiles[i].getValue() > t.getValue()) {
+                position = i;
+            }
+        }
+        for (int i = numberOfTiles - 1; i >= position; i--) {
+            playerTiles[i + 1] = playerTiles[i];
+        }
+        playerTiles[position] = t;
     }
 
     /*
@@ -54,7 +81,7 @@ public class Player {
     public int findPositionOfTile(Tile t) {
         int tilePosition = -1;
         for (int i = 0; i < numberOfTiles; i++) {
-            if(playerTiles[i].matchingTiles(t)) {
+            if (playerTiles[i].matchingTiles(t)) {
                 tilePosition = i;
             }
         }
