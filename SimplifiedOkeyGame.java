@@ -11,8 +11,8 @@ public class SimplifiedOkeyGame {
     int currentPlayerIndex = 0;
     int topTileIndex;
 
-    public static final int TILE_RELEVANCE_CONSTANT = 2; 
-    //Tiles are related if the difference is equal or less than this constant
+    public static final int TILE_RELEVANCE_CONSTANT = 2;
+    // Tiles are related if the difference is equal or less than this constant
 
     public SimplifiedOkeyGame() {
         players = new Player[4];
@@ -35,11 +35,12 @@ public class SimplifiedOkeyGame {
     /*
      * TODO: distributes the starting tiles to the players
      * player at index 0 gets 15 tiles and starts first
-     * other players get 14 tiles, this method assumes the tiles are already shuffled
+     * other players get 14 tiles, this method assumes the tiles are already
+     * shuffled
      */
     public void distributeTilesToPlayers() {
-        for(int i = 0; i < 14; i++){
-            for(int j = 0; j < 4; j++){
+        for (int i = 0; i < 14; i++) {
+            for (int j = 0; j < 4; j++) {
                 players[j].addTile(tiles[(j * 14) + i]);
             }
         }
@@ -52,16 +53,18 @@ public class SimplifiedOkeyGame {
     /*
      * TODO: get the last discarded tile for the current player
      * (this simulates picking up the tile discarded by the previous player)
-     * it should return the toString method of the tile so that we can print what we picked
+     * it should return the toString method of the tile so that we can print what we
+     * picked
      */
-    public String getLastDiscardedTile() {   
+    public String getLastDiscardedTile() {
         players[currentPlayerIndex].addTile(lastDiscardedTile);
         return lastDiscardedTile.toString();
     }
 
     /*
      * TODO: get the top tile from tiles array for the current player
-     * that tile is no longer in the tiles array (this simulates picking up the top tile)
+     * that tile is no longer in the tiles array (this simulates picking up the top
+     * tile)
      * and it will be given to the current player
      * returns the toString method of the tile so that we can print what we picked
      */
@@ -80,21 +83,21 @@ public class SimplifiedOkeyGame {
         Tile[] tilesOrdered = new Tile[104];
 
         // Copying the values of tiles into tilesOrdered array
-        for(int i = 0; i < 104; i++){
-            tilesOrdered[i] = tiles[i];
+        for (int i = 0; i < 104; i++) {
+            tilesOrdered[i] = new Tile(tiles[i].value);
         }
-
-        // Checking for the random index of the tilesOrdered array is 0, if it's 0 it means that random index has already been used
+        // Checking for the random index of the tilesOrdered array is 0, if it's 0 it
+        // means that random index has already been used
         boolean keepShuffling = true;
         int index = 0;
-        while(keepShuffling){
+        while (keepShuffling) {
             int randIndex = rand.nextInt(104);
-            if(tilesOrdered[randIndex].value != 0){
-                tiles[index] = tilesOrdered[randIndex];
+            if (tilesOrdered[randIndex].value != 0) {
+                tiles[index].value = tilesOrdered[randIndex].getValue();
                 tilesOrdered[randIndex].value = 0;
                 index++;
             }
-            if(index == 104){
+            if (index == 104) {
                 keepShuffling = false;
             }
         }
@@ -108,7 +111,8 @@ public class SimplifiedOkeyGame {
         return players[currentPlayerIndex].checkWinning();
     }
 
-    /* TODO: finds the player who has the highest number for the longest chain
+    /*
+     * TODO: finds the player who has the highest number for the longest chain
      * if multiple players have the same length may return multiple players
      */
     public Player[] getPlayerWithHighestLongestChain() {
@@ -125,7 +129,7 @@ public class SimplifiedOkeyGame {
 
         int noOfWinners = 0;
         for (int playerIndex = 0; playerIndex < 4; playerIndex++) {
-            if (longestChain ==  playersLongestChain[playerIndex]) {
+            if (longestChain == playersLongestChain[playerIndex]) {
                 noOfWinners++;
             }
         }
@@ -133,7 +137,7 @@ public class SimplifiedOkeyGame {
         Player[] winners = new Player[noOfWinners];
         int winnersIndex = 0;
         for (int playerIndex = 0; playerIndex < 4; playerIndex++) {
-            if (longestChain ==  playersLongestChain[playerIndex]) {
+            if (longestChain == playersLongestChain[playerIndex]) {
                 winners[winnersIndex] = players[playerIndex];
                 winnersIndex++;
             }
@@ -141,7 +145,7 @@ public class SimplifiedOkeyGame {
 
         return winners;
     }
-    
+
     /*
      * checks if there are more tiles on the stack to continue the game
      */
@@ -159,8 +163,8 @@ public class SimplifiedOkeyGame {
     public void pickTileForComputer() {
         boolean sameTileExists = false;
         boolean tileIsRelatedToLongestChain = false;
-        //true if the discarded tile can be added to the longest chain or
-        //near the chain with 1 point of difference
+        // true if the discarded tile can be added to the longest chain or
+        // near the chain with 1 point of difference
 
         boolean tileIsUseful = false;
         Player currentPlayer = players[currentPlayerIndex];
@@ -168,21 +172,21 @@ public class SimplifiedOkeyGame {
         int chainEndingIndex = currentPlayer.getLongestChainEndingIndex();
         int chainBeginningIndex = chainEndingIndex - chain + 1;
         Tile[] tileSet = currentPlayer.getTiles();
-        
+
         for (int tile = 0; tile < 14; tile++) {
             if (tileSet[tile].getValue() == lastDiscardedTile.getValue()) {
                 sameTileExists = true;
             }
 
-            int tileRelevanceBeginning; //if less than relevance constant, tile is related to the chain
+            int tileRelevanceBeginning; // if less than relevance constant, tile is related to the chain
             int tileRelevanceEnding;
 
             tileRelevanceBeginning = tileSet[chainBeginningIndex].getValue() - lastDiscardedTile.getValue();
             tileRelevanceEnding = tileSet[chainEndingIndex].getValue() - lastDiscardedTile.getValue();
 
             if (Math.abs(tileRelevanceBeginning) <= TILE_RELEVANCE_CONSTANT ||
-                Math.abs(tileRelevanceEnding) <= TILE_RELEVANCE_CONSTANT) {
-                    tileIsRelatedToLongestChain = true;
+                    Math.abs(tileRelevanceEnding) <= TILE_RELEVANCE_CONSTANT) {
+                tileIsRelatedToLongestChain = true;
             }
         }
 
@@ -192,8 +196,7 @@ public class SimplifiedOkeyGame {
 
         if (tileIsUseful) {
             getLastDiscardedTile();
-        }
-        else {
+        } else {
             getTopTile();
         }
     }
@@ -203,8 +206,8 @@ public class SimplifiedOkeyGame {
      * you may choose based on how useful each tile is
      */
     public void discardTileForComputer() {
-        //If there is a repeating tile, it would be discarded.
-        //Else, furthest tile to the longest chain would be discarded.
+        // If there is a repeating tile, it would be discarded.
+        // Else, furthest tile to the longest chain would be discarded.
         int furthestTileToChainIndex = -1;
         int repeatingTileIndex = -1;
 
@@ -227,15 +230,13 @@ public class SimplifiedOkeyGame {
 
         if (maxDifference1 > maxDifference2) {
             furthestTileToChainIndex = 0;
-        }
-        else {
+        } else {
             furthestTileToChainIndex = 13;
         }
 
         if (repeatingTileIndex != -1) {
             discardTile(repeatingTileIndex);
-        }
-        else {
+        } else {
             discardTile(furthestTileToChainIndex);
         }
     }
@@ -250,7 +251,7 @@ public class SimplifiedOkeyGame {
     }
 
     public void displayDiscardInformation() {
-        if(lastDiscardedTile != null) {
+        if (lastDiscardedTile != null) {
             System.out.println("Last Discarded: " + lastDiscardedTile.toString());
         }
     }
@@ -263,7 +264,7 @@ public class SimplifiedOkeyGame {
         return currentPlayerIndex;
     }
 
-      public String getCurrentPlayerName() {
+    public String getCurrentPlayerName() {
         return players[currentPlayerIndex].getName();
     }
 
@@ -272,7 +273,7 @@ public class SimplifiedOkeyGame {
     }
 
     public void setPlayerName(int index, String name) {
-        if(index >= 0 && index <= 3) {
+        if (index >= 0 && index <= 3) {
             players[index] = new Player(name);
         }
     }
