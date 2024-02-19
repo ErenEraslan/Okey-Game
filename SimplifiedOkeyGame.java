@@ -9,9 +9,16 @@ public class SimplifiedOkeyGame {
     Tile lastDiscardedTile;
 
     int currentPlayerIndex = 0;
+    int topTileIndex;
+
+    public static final int TILE_RELEVANCE_CONSTANT = 2; 
+    //Tiles are related if the difference is equal or less than this constant
 
     public SimplifiedOkeyGame() {
         players = new Player[4];
+        createTiles();
+        shuffleTiles();
+        distributeTilesToPlayers();
     }
 
     public void createTiles() {
@@ -41,6 +48,8 @@ public class SimplifiedOkeyGame {
         }
         players[0].addTile(tiles[56]);
         tileCount -= 57;
+
+        topTileIndex = 57;
     }
 
     /*
@@ -48,8 +57,9 @@ public class SimplifiedOkeyGame {
      * (this simulates picking up the tile discarded by the previous player)
      * it should return the toString method of the tile so that we can print what we picked
      */
-    public String getLastDiscardedTile() {
-        return null;
+    public String getLastDiscardedTile() {   
+        players[currentPlayerIndex].addTile(lastDiscardedTile);
+        return lastDiscardedTile.toString();
     }
 
     /*
@@ -59,7 +69,10 @@ public class SimplifiedOkeyGame {
      * returns the toString method of the tile so that we can print what we picked
      */
     public String getTopTile() {
-        return null;
+        Tile topTile = tiles[topTileIndex];
+        players[currentPlayerIndex].addTile(topTile);
+        topTileIndex++;
+        return topTile.toString();
     }
 
     /*
@@ -95,14 +108,39 @@ public class SimplifiedOkeyGame {
      * finished the game. use checkWinning method of the player class to determine
      */
     public boolean didGameFinish() {
-        return false;
+        return players[currentPlayerIndex].checkWinning();
     }
 
     /* TODO: finds the player who has the highest number for the longest chain
      * if multiple players have the same length may return multiple players
      */
     public Player[] getPlayerWithHighestLongestChain() {
-        Player[] winners = new Player[1];
+        int[] playersLongestChain = new int[4];
+        int longestChain = 0;
+        for (int playerIndex = 0; playerIndex < 4; playerIndex++) {
+            int currentPlayerLongestChain = players[playerIndex].findLongestChain();
+            playersLongestChain[playerIndex] = currentPlayerLongestChain;
+
+            if (currentPlayerLongestChain > longestChain) {
+                longestChain = currentPlayerLongestChain;
+            }
+        }
+
+        int noOfWinners = 0;
+        for (int playerIndex = 0; playerIndex < 4; playerIndex++) {
+            if (longestChain ==  playersLongestChain[playerIndex]) {
+                noOfWinners++;
+            }
+        }
+
+        Player[] winners = new Player[noOfWinners];
+        int winnersIndex = 0;
+        for (int playerIndex = 0; playerIndex < 4; playerIndex++) {
+            if (longestChain ==  playersLongestChain[playerIndex]) {
+                winners[winnersIndex] = players[playerIndex];
+                winnersIndex++;
+            }
+        }
 
         return winners;
     }
@@ -122,7 +160,45 @@ public class SimplifiedOkeyGame {
      * by checking if it increases the longest chain length, if not get the top tile
      */
     public void pickTileForComputer() {
+        boolean sameTileExists = false;
+        boolean tileIsRelatedToLongestChain = false;
+        //true if the discarded tile can be added to the longest chain or
+        //near the chain with 1 point of difference
 
+        boolean tileIsUseful = false;
+        Player currentPlayer = players[currentPlayerIndex];
+        int chain = currentPlayer.findLongestChain();
+        int chainEndingIndex = currentPlayer.getLongestChainEndingIndex();
+        int chainBeginningIndex = chainEndingIndex - chain + 1;
+        Tile[] tileSet = currentPlayer.getTiles();
+        
+        for (int tile = 0; tile < 14; tile++) {
+            if (tileSet[tile].getValue() == lastDiscardedTile.getValue()) {
+                sameTileExists = true;
+            }
+
+            int tileRelevanceBeginning; //if less than relevance constant, tile is related to the chain
+            int tileRelevanceEnding;
+
+            tileRelevanceBeginning = tileSet[chainBeginningIndex].getValue() - lastDiscardedTile.getValue();
+            tileRelevanceEnding = tileSet[chainEndingIndex].getValue() - lastDiscardedTile.getValue();
+
+            if (Math.abs(tileRelevanceBeginning) <= TILE_RELEVANCE_CONSTANT ||
+                Math.abs(tileRelevanceEnding) <= TILE_RELEVANCE_CONSTANT) {
+                    tileIsRelatedToLongestChain = true;
+            }
+        }
+
+        if (!sameTileExists && tileIsRelatedToLongestChain) {
+            tileIsUseful = true;
+        }
+
+        if (tileIsUseful) {
+            getLastDiscardedTile();
+        }
+        else {
+            getTopTile();
+        }
     }
 
     /*
@@ -130,7 +206,41 @@ public class SimplifiedOkeyGame {
      * you may choose based on how useful each tile is
      */
     public void discardTileForComputer() {
+        //If there is a repeating tile, it would be discarded.
+        //Else, furthest tile to the longest chain would be discarded.
+        int furthestTileToChainIndex = -1;
+        int repeatingTileIndex = -1;
 
+        Player currentPlayer = players[currentPlayerIndex];
+        int chain = currentPlayer.findLongestChain();
+        int chainEndingIndex = currentPlayer.getLongestChainEndingIndex();
+        int chainBeginningIndex = chainEndingIndex - chain + 1;
+        Tile[] tileSet = currentPlayer.getTiles();
+
+        for (int tile = 0; tile < 14; tile++) {
+            if (tile != 0) {
+                if (tileSet[tile].getValue() == tileSet[tile - 1].getValue()) {
+                    repeatingTileIndex = tile;
+                }
+            }
+        }
+
+        int maxDifference1 = tileSet[chainBeginningIndex].getValue() - tileSet[0].getValue();
+        int maxDifference2 = tileSet[13].getValue() - tileSet[chainEndingIndex].getValue();
+
+        if (maxDifference1 > maxDifference2) {
+            furthestTileToChainIndex = 0;
+        }
+        else {
+            furthestTileToChainIndex = 13;
+        }
+
+        if (repeatingTileIndex != -1) {
+            discardTile(repeatingTileIndex);
+        }
+        else {
+            discardTile(furthestTileToChainIndex);
+        }
     }
 
     /*
@@ -139,7 +249,7 @@ public class SimplifiedOkeyGame {
      * that player's tiles
      */
     public void discardTile(int tileIndex) {
-
+        lastDiscardedTile = players[currentPlayerIndex].getAndRemoveTile(tileIndex);
     }
 
     public void displayDiscardInformation() {

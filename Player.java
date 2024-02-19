@@ -2,9 +2,11 @@ public class Player {
     String playerName;
     Tile[] playerTiles;
     int numberOfTiles;
+    int longestChainEndingIndex;
 
     public Player(String name) {
         setName(name);
+        longestChainEndingIndex = 0;
         playerTiles = new Tile[15]; // there are at most 15 tiles a player owns at any time
         numberOfTiles = 0; // currently this player owns 0 tiles, will pick tiles at the beggining of the
                            // game
@@ -33,11 +35,12 @@ public class Player {
         int longestChain = 0;
         int currentLongestChain = 0;
         for (int i = 0; i < numberOfTiles - 1; i++) {
-            if (playerTiles[i + 1].getValue() - playerTiles[i].getValue() == 1) {
+            if (playerTiles[i + 1].canFormChainWith(playerTiles[i])) {
                 currentLongestChain++;
             } else if (playerTiles[i + 1].getValue() != playerTiles[i].getValue()) {
                 if (currentLongestChain >= longestChain) {
                     longestChain = currentLongestChain;
+                    longestChainEndingIndex = i;
                 }
                 currentLongestChain = 0;
             }
@@ -109,5 +112,9 @@ public class Player {
 
     public String getName() {
         return playerName;
+    }
+
+    public int getLongestChainEndingIndex() {
+        return longestChainEndingIndex;
     }
 }
