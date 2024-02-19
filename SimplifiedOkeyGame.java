@@ -16,9 +16,6 @@ public class SimplifiedOkeyGame {
 
     public SimplifiedOkeyGame() {
         players = new Player[4];
-        createTiles();
-        shuffleTiles();
-        distributeTilesToPlayers();
     }
 
     public void createTiles() {
