@@ -56,6 +56,7 @@ public class Player {
         for (int i = index; i < numberOfTiles - 1; i++) {
             playerTiles[i] = playerTiles[i + 1];
         }
+        numberOfTiles--;
         return temp;
     }
 
@@ -76,6 +77,7 @@ public class Player {
             playerTiles[i + 1] = playerTiles[i];
         }
         playerTiles[position] = t;
+        numberOfTiles++;
     }
 
     /*
