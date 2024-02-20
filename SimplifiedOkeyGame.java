@@ -177,6 +177,7 @@ public class SimplifiedOkeyGame {
             if (tileSet[tile].getValue() == lastDiscardedTile.getValue()) {
                 sameTileExists = true;
             }
+        }
 
             int tileRelevanceBeginning; // if less than relevance constant, tile is related to the chain
             int tileRelevanceEnding;
@@ -188,7 +189,6 @@ public class SimplifiedOkeyGame {
                     Math.abs(tileRelevanceEnding) <= TILE_RELEVANCE_CONSTANT) {
                 tileIsRelatedToLongestChain = true;
             }
-        }
 
         if (!sameTileExists && tileIsRelatedToLongestChain) {
             tileIsUseful = true;
