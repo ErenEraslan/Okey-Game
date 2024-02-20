@@ -150,7 +150,7 @@ public class SimplifiedOkeyGame {
      * checks if there are more tiles on the stack to continue the game
      */
     public boolean hasMoreTileInStack() {
-        return tileCount != 0;
+        return topTileIndex != 104;
     }
 
     /*
