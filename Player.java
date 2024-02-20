@@ -68,10 +68,17 @@ public class Player {
      */
     public void addTile(Tile t) {
         int position = 0;
-        for (int i = 0; i < numberOfTiles; i++) {
-            if (playerTiles[i].getValue() > t.getValue()) {
-                position = i;
+        boolean found = false;
+        int j = 0;
+        while (!found && j < numberOfTiles) {
+            if (playerTiles[j].getValue() > t.getValue()) {
+                position = j;
+                found = true;
             }
+            j++;
+        }
+        if (!found) {
+            position = numberOfTiles;
         }
         for (int i = numberOfTiles - 1; i >= position; i--) {
             playerTiles[i + 1] = playerTiles[i];
