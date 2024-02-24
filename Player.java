@@ -70,6 +70,30 @@ public class Player {
         return longestChain;
     }
 
+    public void displayLongestChain() {
+        System.out.println("\n" + playerName + "'s tile:");
+        int maxLength = 1;
+        int currentLength = 1;
+        int startOfLongestChain = 0;
+    
+        for (int i = 0; i < numberOfTiles - 1; i++) {
+            if (playerTiles[i].canFormChainWith(playerTiles[i + 1])) {
+                currentLength++;
+                if (currentLength > maxLength) {
+                    maxLength = currentLength;
+                    startOfLongestChain = i - currentLength + 2;
+                }
+            } else {
+                currentLength = 1;
+            }
+        }
+    
+        for (int i = startOfLongestChain; i < startOfLongestChain + maxLength; i++) {
+            System.out.print(playerTiles[i].toString() + " ");
+        }
+    }
+    
+
     /*
      * TODO: removes and returns the tile in given index position
      */

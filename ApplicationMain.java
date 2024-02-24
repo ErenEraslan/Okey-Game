@@ -122,13 +122,22 @@ public class ApplicationMain {
                     // determine the winner based on longest chain lengths of the players
                     // use getPlayerWithHighestLongestChain method of game for this task
                     Player[] winners = game.getPlayerWithHighestLongestChain();
-                    if (winners.length == 1) {
-                        System.out.println(winners[0].getName() + " wins!");
+                    Player[] allPlayers = game.players;
+                    if(!game.hasMoreTileInStack()){
+                        System.out.println("\nNo tiles left in the stack");
+                        for (Player  player : allPlayers) {
+                            player.displayLongestChain();
+                        }
+                        System.out.println("\n" + winners[0].getName() + " wins!");
+
+                    }else if (winners.length == 1) {
+                        System.out.println(winners[0].getName() + " wins! Longest Chain:");
+                        winners[0].displayLongestChain();
                     } else {
                         System.out.println("It's a tie between the following players:");
                         for (Player winner : winners) {
-                            System.out.println(winner.getName());
-                            winner.displayTiles();
+                            System.out.println(winner.getName() + "'s longest chain:");
+                            winner.displayLongestChain();
                         }
                     }
 
@@ -155,13 +164,22 @@ public class ApplicationMain {
                     // determine the winner based on longest chain lengths of the players
                     // use getPlayerWithHighestLongestChain method of game for this task
                     Player[] winners = game.getPlayerWithHighestLongestChain();
-                    if (winners.length == 1) {
-                        System.out.println(winners[0].getName() + " wins!");
+                    Player[] allPlayers = game.players;
+                    if(!game.hasMoreTileInStack()){
+                        System.out.println("\nNo tiles left in the stack");
+                        for (Player  player : allPlayers) {
+                            player.displayLongestChain();
+                        }
+                        System.out.println("\n" + winners[0].getName() + " wins!");
+
+                    }else if (winners.length == 1) {
+                        System.out.println(winners[0].getName() + " wins! Longest Chain:");
+                        winners[0].displayLongestChain();
                     } else {
                         System.out.println("It's a tie between the following players:");
                         for (Player winner : winners) {
-                            System.out.println(winner.getName());
-                            winner.displayTiles();
+                            System.out.println(winner.getName() + "'s longest chain:");
+                            winner.displayLongestChain();
                         }
                     }
                 }
