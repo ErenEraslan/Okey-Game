@@ -20,25 +20,33 @@ public class ApplicationMain {
 
         // developer mode is used for seeing the computer players hands, to be used for
         // debugging
-        System.out.print("\nPlay in developer's mode with other player's tiles visible? (Y/N): ");
-        char devMode = sc.next().charAt(0);
-        boolean devModeOn = devMode == 'Y' || devMode == 'y';
-
+        boolean devChosen = false;
+        boolean devModeOn = false;
+        while (!devChosen) {
+            System.out.print("\nPlay in developer's mode with other player's tiles visible? (Y/N): ");
+            char devMode = sc.next().charAt(0);
+            if (devMode == 'Y' || devMode == 'y') {
+                devModeOn = true;
+                devChosen = true;
+            } else if (devMode == 'N' || devMode == 'n') {
+                devModeOn = false;
+                devChosen = true;
+            } else {
+                System.out.println("Enter a valid choice!");
+            }
+        }
         boolean firstTurn = true;
         boolean gameContinues = true;
         int playerChoice = -1;
-
         while (gameContinues) {
 
             int currentPlayer = game.getCurrentPlayerIndex();
             System.out.println("\n" + game.getCurrentPlayerName() + "'s turn.");
-
             if (currentPlayer == 0) {
                 // this is the human player's turn
                 game.displayRemainingTiles();
                 game.displayDiscardInformation();
                 game.displayCurrentPlayersTiles();
-
                 System.out.println("\nWhat will you do?");
 
                 if (!firstTurn) {
@@ -46,23 +54,37 @@ public class ApplicationMain {
                     // discard
                     System.out.println("1. Pick From Tiles");
                     System.out.println("2. Pick From Discard");
-                } else {
+                } else if (firstTurn) {
                     // on first turn the starting player does not pick up new tile
                     System.out.println("1. Discard Tile");
                 }
 
-                System.out.print("Your choice: ");
-                playerChoice = sc.nextInt();
-
+                boolean valid = false;
                 // after the first turn we can pick up
                 if (!firstTurn) {
-                    if (playerChoice == 1) {
-                        System.out.println("You picked up: " + game.getTopTile());
-                        firstTurn = false;
-                    } else if (playerChoice == 2) {
-                        System.out.println("You picked up: " + game.getLastDiscardedTile());
+                    while (!valid) {
+                        System.out.print("Your choice: ");
+                        if (sc.hasNextInt()) {
+                            playerChoice = sc.nextInt();
+                            if (playerChoice == 1) {
+                                System.out.println("You picked up: " + game.getTopTile());
+                                valid = true;
+                                firstTurn = false;
+                            } else if (playerChoice == 2) {
+                                System.out.println("You picked up: " + game.getLastDiscardedTile());
+                                valid = true;
+                            } else {
+                                System.out.println("Enter a valid choice!");
+                                System.out.println("1. Pick From Tiles");
+                                System.out.println("2. Pick From Discard");
+                            }
+                        } else {
+                            System.out.println("Enter a valid choice!");
+                            System.out.println("1. Pick From Tiles");
+                            System.out.println("2. Pick From Discard");
+                            sc.next();
+                        }
                     }
-
                     // display the hand after picking up new tile
                     game.displayCurrentPlayersTiles();
                 } else {
@@ -71,21 +93,28 @@ public class ApplicationMain {
                 }
 
                 gameContinues = !game.didGameFinish() && game.hasMoreTileInStack();
-
+                boolean discarded = false;
                 if (gameContinues) {
-                    // if game continues we need to discard a tile using the given index by the
-                    // player
+                    // if game continues we need to discard a tile using the given
+                    // index by the player
                     System.out.println("\nWhich tile you will discard?");
-                    System.out.print("Discard the tile in index: ");
-                    playerChoice = sc.nextInt();
-
-                    // make sure the given index is correct, should be 0 <= index <= 14
-                    if (playerChoice < 0 || playerChoice > 14) {
-                        System.out.println("Invalid index. Please enter a number between 0 and 14.");
-                        continue;
+                    while (!discarded) {
+                        System.out.print("Discard the tile in index: ");
+                        if (sc.hasNextInt()) {
+                            playerChoice = sc.nextInt();
+                            // make sure the given index is correct, should be 0 <= index <= 14
+                            if (playerChoice < 0 || playerChoice > 14) {
+                                System.out.println("Invalid index. Please enter a number between 0 and 14.");
+                            } else {
+                                discarded = true;
+                            }
+                        } else {
+                            System.out.println("Invalid index. Please enter a number between 0 and 14.");
+                            sc.next();
+                        }
                     }
-
                     game.discardTile(playerChoice);
+                    game.displayCurrentPlayersTiles();
                     game.passTurnToNextPlayer();
                 } else {
 
