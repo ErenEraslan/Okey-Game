@@ -72,6 +72,7 @@ public class SimplifiedOkeyGame {
         Tile topTile = tiles[topTileIndex];
         players[currentPlayerIndex].addTile(topTile);
         topTileIndex++;
+        tileCount--;
         return topTile.toString();
     }
 
@@ -150,7 +151,7 @@ public class SimplifiedOkeyGame {
      * checks if there are more tiles on the stack to continue the game
      */
     public boolean hasMoreTileInStack() {
-        return topTileIndex != 104;
+        return tileCount > 0;
     }
 
     /*
@@ -170,7 +171,7 @@ public class SimplifiedOkeyGame {
         Player currentPlayer = players[currentPlayerIndex];
         int chain = currentPlayer.findLongestChain();
         int chainEndingIndex = currentPlayer.getLongestChainEndingIndex();
-        int chainBeginningIndex = chainEndingIndex - chain + 1;
+        int chainBeginningIndex = chainEndingIndex - chain + 1 + currentPlayer.getLongestChainRepeats();
         Tile[] tileSet = currentPlayer.getTiles();
 
         for (int tile = 0; tile < 14; tile++) {
@@ -214,10 +215,10 @@ public class SimplifiedOkeyGame {
         Player currentPlayer = players[currentPlayerIndex];
         int chain = currentPlayer.findLongestChain();
         int chainEndingIndex = currentPlayer.getLongestChainEndingIndex();
-        int chainBeginningIndex = chainEndingIndex - chain + 1;
+        int chainBeginningIndex = chainEndingIndex - chain + 1 + currentPlayer.getLongestChainRepeats();
         Tile[] tileSet = currentPlayer.getTiles();
 
-        for (int tile = 0; tile < 14; tile++) {
+        for (int tile = 0; tile < 15; tile++) {
             if (tile != 0) {
                 if (tileSet[tile].getValue() == tileSet[tile - 1].getValue()) {
                     repeatingTileIndex = tile;
@@ -231,7 +232,7 @@ public class SimplifiedOkeyGame {
         if (maxDifference1 > maxDifference2) {
             furthestTileToChainIndex = 0;
         } else {
-            furthestTileToChainIndex = 13;
+            furthestTileToChainIndex = 14;
         }
 
         if (repeatingTileIndex != -1) {
@@ -276,6 +277,10 @@ public class SimplifiedOkeyGame {
         if (index >= 0 && index <= 3) {
             players[index] = new Player(name);
         }
+    }
+
+    public void displayRemainingTiles() {
+        System.out.println("Remaining Tiles On The Table: " + tileCount);
     }
 
 }

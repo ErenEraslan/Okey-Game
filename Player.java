@@ -3,10 +3,12 @@ public class Player {
     Tile[] playerTiles;
     int numberOfTiles;
     int longestChainEndingIndex;
+    int longestChainRepeats;
 
     public Player(String name) {
         setName(name);
         longestChainEndingIndex = 0;
+        longestChainRepeats = 0;
         playerTiles = new Tile[15]; // there are at most 15 tiles a player owns at any time
         numberOfTiles = 0; // currently this player owns 0 tiles, will pick tiles at the beggining of the
                            // game
@@ -32,19 +34,39 @@ public class Player {
      * and also for determining the winner if tile stack has no tiles
      */
     public int findLongestChain() {
+        boolean chainStarted = false;
+        int currentChainRepeatNumber = 0;
+        int longestChainRepeatNumber = 0;
         int longestChain = 0;
         int currentLongestChain = 0;
         for (int i = 0; i < numberOfTiles - 1; i++) {
             if (playerTiles[i + 1].canFormChainWith(playerTiles[i])) {
                 currentLongestChain++;
+                if (!chainStarted) {
+                    currentLongestChain++;
+                    chainStarted = true;
+                }
+                
             } else if (playerTiles[i + 1].getValue() != playerTiles[i].getValue()) {
                 if (currentLongestChain >= longestChain) {
                     longestChain = currentLongestChain;
                     longestChainEndingIndex = i;
+                    chainStarted = false;
+                }
+
+                if (currentChainRepeatNumber > longestChainRepeats) {
+                    longestChainRepeats = currentChainRepeatNumber;
                 }
                 currentLongestChain = 0;
+                currentChainRepeatNumber = 0;
+            } else {
+                if (chainStarted) {
+                    currentChainRepeatNumber++;
+                }
             }
         }
+
+        longestChainRepeats = longestChainRepeatNumber;
         return longestChain;
     }
 
@@ -125,5 +147,9 @@ public class Player {
 
     public int getLongestChainEndingIndex() {
         return longestChainEndingIndex;
+    }
+
+    public int getLongestChainRepeats() {
+        return longestChainRepeats;
     }
 }

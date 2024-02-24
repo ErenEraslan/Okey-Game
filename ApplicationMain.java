@@ -20,9 +20,9 @@ public class ApplicationMain {
 
         // developer mode is used for seeing the computer players hands, to be used for
         // debugging
-        System.out.print("Play in developer's mode with other player's tiles visible? (Y/N): ");
+        System.out.print("\nPlay in developer's mode with other player's tiles visible? (Y/N): ");
         char devMode = sc.next().charAt(0);
-        boolean devModeOn = devMode == 'Y';
+        boolean devModeOn = devMode == 'Y' || devMode == 'y';
 
         boolean firstTurn = true;
         boolean gameContinues = true;
@@ -31,14 +31,15 @@ public class ApplicationMain {
         while (gameContinues) {
 
             int currentPlayer = game.getCurrentPlayerIndex();
-            System.out.println(game.getCurrentPlayerName() + "'s turn.");
+            System.out.println("\n" + game.getCurrentPlayerName() + "'s turn.");
 
             if (currentPlayer == 0) {
                 // this is the human player's turn
-                game.displayCurrentPlayersTiles();
+                game.displayRemainingTiles();
                 game.displayDiscardInformation();
+                game.displayCurrentPlayersTiles();
 
-                System.out.println("What will you do?");
+                System.out.println("\nWhat will you do?");
 
                 if (!firstTurn) {
                     // after the first turn, player may pick from tile stack or last player's
@@ -74,7 +75,7 @@ public class ApplicationMain {
                 if (gameContinues) {
                     // if game continues we need to discard a tile using the given index by the
                     // player
-                    System.out.println("Which tile you will discard?");
+                    System.out.println("\nWhich tile you will discard?");
                     System.out.print("Discard the tile in index: ");
                     playerChoice = sc.nextInt();
 
@@ -98,15 +99,13 @@ public class ApplicationMain {
                         System.out.println("It's a tie between the following players:");
                         for (Player winner : winners) {
                             System.out.println(winner.getName());
+                            winner.displayTiles();
                         }
                     }
 
                 }
             } else {
                 // this is the computer player's turn
-                if (devModeOn) {
-                    game.displayCurrentPlayersTiles();
-                }
 
                 // computer picks a tile from tile stack or other player's discard
                 game.pickTileForComputer();
@@ -115,7 +114,11 @@ public class ApplicationMain {
 
                 if (gameContinues) {
                     // if game did not end computer should discard
+                    game.displayDiscardInformation();
                     game.discardTileForComputer();
+                    if (devModeOn) {
+                        game.displayCurrentPlayersTiles();
+                    }
                     game.passTurnToNextPlayer();
                 } else {
 
@@ -129,9 +132,9 @@ public class ApplicationMain {
                         System.out.println("It's a tie between the following players:");
                         for (Player winner : winners) {
                             System.out.println(winner.getName());
+                            winner.displayTiles();
                         }
                     }
-
                 }
             }
         }
