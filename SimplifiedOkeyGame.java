@@ -180,16 +180,16 @@ public class SimplifiedOkeyGame {
             }
         }
 
-            int tileRelevanceBeginning; // if less than relevance constant, tile is related to the chain
-            int tileRelevanceEnding;
+        int tileRelevanceBeginning; // if less than relevance constant, tile is related to the chain
+        int tileRelevanceEnding;
 
-            tileRelevanceBeginning = tileSet[chainBeginningIndex].getValue() - lastDiscardedTile.getValue();
-            tileRelevanceEnding = tileSet[chainEndingIndex].getValue() - lastDiscardedTile.getValue();
+        tileRelevanceBeginning = tileSet[chainBeginningIndex].getValue() - lastDiscardedTile.getValue();
+        tileRelevanceEnding = tileSet[chainEndingIndex].getValue() - lastDiscardedTile.getValue();
 
-            if (Math.abs(tileRelevanceBeginning) <= TILE_RELEVANCE_CONSTANT ||
-                    Math.abs(tileRelevanceEnding) <= TILE_RELEVANCE_CONSTANT) {
-                tileIsRelatedToLongestChain = true;
-            }
+        if (Math.abs(tileRelevanceBeginning) <= TILE_RELEVANCE_CONSTANT ||
+                Math.abs(tileRelevanceEnding) <= TILE_RELEVANCE_CONSTANT) {
+            tileIsRelatedToLongestChain = true;
+        }
 
         if (!sameTileExists && tileIsRelatedToLongestChain) {
             tileIsUseful = true;

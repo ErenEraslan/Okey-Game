@@ -40,7 +40,19 @@ public class Player {
         int longestChain = 0;
         int currentLongestChain = 0;
         for (int i = 0; i < numberOfTiles - 1; i++) {
-            if (playerTiles[i + 1].canFormChainWith(playerTiles[i])) {
+            if (numberOfTiles-2 == i) {
+                if (playerTiles[i + 1].canFormChainWith(playerTiles[i]))
+                    currentLongestChain++;
+                
+                if (currentLongestChain >= longestChain) {
+                    longestChain = currentLongestChain;
+                    longestChainEndingIndex = i + 1;
+                }
+
+                if (currentChainRepeatNumber > longestChainRepeats) {
+                    longestChainRepeats = currentChainRepeatNumber;
+                }
+            } else if (playerTiles[i + 1].canFormChainWith(playerTiles[i])) {
                 currentLongestChain++;
                 if (!chainStarted) {
                     currentLongestChain++;
@@ -51,14 +63,15 @@ public class Player {
                 if (currentLongestChain >= longestChain) {
                     longestChain = currentLongestChain;
                     longestChainEndingIndex = i;
-                    chainStarted = false;
                 }
 
-                if (currentChainRepeatNumber > longestChainRepeats) {
+                if (currentChainRepeatNumber >= longestChainRepeats) {
                     longestChainRepeats = currentChainRepeatNumber;
                 }
+
                 currentLongestChain = 0;
                 currentChainRepeatNumber = 0;
+                chainStarted = false;
             } else {
                 if (chainStarted) {
                     currentChainRepeatNumber++;
@@ -70,8 +83,8 @@ public class Player {
         return longestChain;
     }
 
-    public void displayLongestChain() {
-        System.out.println("\n" + playerName + "'s tile:");
+    public void displayLongestChain2() {
+        System.out.println("\n" + playerName + "'s longest tile chain:");
         int maxLength = 1;
         int currentLength = 1;
         int startOfLongestChain = 0;
@@ -92,8 +105,29 @@ public class Player {
             System.out.print(playerTiles[i].toString() + " ");
         }
     }
-    
 
+    public void displayLongestChain() {
+        System.out.println("\n" + playerName + "'s longest tile chain:");
+
+        int longestChain = this.findLongestChain();
+        int[] chainArray = new int[longestChain];
+
+        int counter = 1;
+        for (int i = longestChain - 1; i >= 0; i--) {
+            if (i == longestChain - 1)
+                chainArray[i] = playerTiles[longestChainEndingIndex].getValue();
+            else {
+                if (chainArray[i + 1] != playerTiles[longestChainEndingIndex - counter].getValue()) {
+                    chainArray[i] = playerTiles[longestChainEndingIndex - counter].getValue();
+                    counter++;
+                }
+            }
+        }
+
+        for (int i = 0; i < longestChain; i++) {
+            System.out.print(chainArray[i] + " ");
+        }
+    }
     /*
      * TODO: removes and returns the tile in given index position
      */
