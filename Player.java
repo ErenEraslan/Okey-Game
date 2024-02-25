@@ -42,12 +42,20 @@ public class Player {
         int currentLongestChain = 0;
         for (int i = 0; i < numberOfTiles - 1; i++) {
             if (numberOfTiles - 2 == i) {
-                if (playerTiles[i + 1].canFormChainWith(playerTiles[i]))
+                boolean lastElementFormsChain = false;
+                if (playerTiles[i + 1].canFormChainWith(playerTiles[i])) {
                     currentLongestChain++;
+                    lastElementFormsChain = true;
+                }
 
                 if (currentLongestChain >= longestChain) {
                     longestChain = currentLongestChain;
-                    longestChainEndingIndex = i + 1;
+
+                    if (lastElementFormsChain) {
+                        longestChainEndingIndex = i+1;
+                    } else {
+                        longestChainEndingIndex = i;
+                    }
                 }
 
                 if (currentChainRepeatNumber > longestChainRepeats) {
