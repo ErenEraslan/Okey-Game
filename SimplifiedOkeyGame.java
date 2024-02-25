@@ -121,6 +121,7 @@ public class SimplifiedOkeyGame {
         int longestChain = 0;
         for (int playerIndex = 0; playerIndex < 4; playerIndex++) {
             int currentPlayerLongestChain = players[playerIndex].findLongestChain();
+            players[playerIndex].printInfoTest(currentPlayerLongestChain);
             playersLongestChain[playerIndex] = currentPlayerLongestChain;
 
             if (currentPlayerLongestChain > longestChain) {

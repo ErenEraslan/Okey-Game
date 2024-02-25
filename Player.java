@@ -212,4 +212,11 @@ public class Player {
     public int getLongestChainRepeats() {
         return longestChainRepeats;
     }
+
+    public void printInfoTest(int longestChain) {
+        System.out.println();
+        System.out.println(playerName + "'s Longest Chain: " + longestChain);
+        System.out.println(playerName + "'s Longest Chain Ending Index: " + longestChainEndingIndex);
+        System.out.println(playerName + "'s Longest Chain Repeats: " + longestChainRepeats);
+    }
 }
